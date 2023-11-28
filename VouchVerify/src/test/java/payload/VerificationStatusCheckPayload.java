@@ -15,12 +15,12 @@ import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 
-public class VerificationStatusCheck {
+public class VerificationStatusCheckPayload {
 
-	public static Response verificationStatus(PropertiesUtility property) {
+	public static Response verificationStatus(PropertiesUtility property, String verifyRef) {
 
 		JSONObject outerBody = new JSONObject();
-		outerBody.put("verification_ref", property.readData("verifyID"));
+		outerBody.put("verification_ref", verifyRef);
 		outerBody.put("timestamp", TimeStampGenerator.generateTimestamp());
 
 		ObjectMapper mapper = new ObjectMapper();

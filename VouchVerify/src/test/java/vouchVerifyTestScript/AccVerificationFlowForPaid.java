@@ -13,7 +13,7 @@ import genricLibraries.PropertiesUtility;
 import genricLibraries.UtilitiesPath;
 import io.restassured.response.Response;
 import payload.SysConfPayload;
-import payload.VerificationStatusCheck;
+import payload.VerificationStatusCheckPayload;
 import pom.VerificationDetailsPage;
 import pom.Verification_PaymentHistoryPage;
 
@@ -147,7 +147,7 @@ public class AccVerificationFlowForPaid extends BaseClass {
 				}
 
 				// checking the status of verification by using api
-				Response statusResponse = VerificationStatusCheck.verificationStatus(property);
+				Response statusResponse = VerificationStatusCheckPayload.verificationStatus(property,property.readData("verifyID"));
 				System.out.println(statusResponse.getBody().asString());
 				break;
 			} catch (Exception timeOut) {
@@ -246,7 +246,7 @@ public class AccVerificationFlowForPaid extends BaseClass {
 						}
 					}
 					// checking the status of verification by using api
-					Response statusResponse = VerificationStatusCheck.verificationStatus(property);
+					Response statusResponse = VerificationStatusCheckPayload.verificationStatus(property,property.readData("verifyID"));
 					System.out.println(statusResponse.getBody().asString());
 					break;
 				} catch (Exception verifyHeader) {

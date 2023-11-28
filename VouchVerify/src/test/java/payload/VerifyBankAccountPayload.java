@@ -28,7 +28,7 @@ public class VerifyBankAccountPayload {
 		}
 		String newValue = "" + verificationRef;
 		property.writeToProperties("verify_ref", newValue, UtilitiesPath.PROPERTIES_PATH);
-		String verfication_ref = "guruVerify-" + verificationRef;
+		String verfication_ref = "GuruClientVerifyRef-" + verificationRef;
 		property.writeToProperties("verifyID", verfication_ref, UtilitiesPath.PROPERTIES_PATH);
 		outerBody.put("verification_ref", verfication_ref);
 		outerBody.put("type", "bank_account");
@@ -37,8 +37,10 @@ public class VerifyBankAccountPayload {
 		outerBody.put("ifsc", ifscNum);
 		outerBody.put("mobile", "8970486528");
 		outerBody.put("name", "Guruprasad");
-		outerBody.put("escrow_id", "penny1");
-		outerBody.put("timestamp", TimeStampGenerator.generateTimestamp());
+		outerBody.put("escrow_id", "guru1");
+		String timeStamp=TimeStampGenerator.generateTimestamp();
+		property.writeToProperties("timeStamp", timeStamp, UtilitiesPath.PROPERTIES_PATH);
+		outerBody.put("timestamp", timeStamp);
 		outerBody.put("refund_amount", 1);
 		outerBody.put("source_upi", "8970486528@paytm");
 		outerBody.put("collect_user_ref", "Guruprasad");
@@ -49,7 +51,7 @@ public class VerifyBankAccountPayload {
 		String signature = null;
 		try {
 			signature = SignatureGenerator.generateRSASignature(jsonPayload,
-					PrivateKeyAccess.getPrivateKey("./PrivateKey/LivePrivateKey.key"));
+					PrivateKeyAccess.getPrivateKey("./PrivateKey/clientApiPrivateKey.key"));
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -62,7 +64,7 @@ public class VerifyBankAccountPayload {
 		 String finaljsonPayload = convertToJson(outerBody);
 
 //		It is the apikey for header and to access the api
-		String apiKey = ApiKeyAccess.getApiKey("./apiKey/statusApiKey.key");
+		String apiKey = ApiKeyAccess.getApiKey("./apiKey/clientApiKey.key");
 
 //		It is for invoking the api 
 		Response response = RestAssured.given().contentType(ContentType.JSON).accept(ContentType.JSON)

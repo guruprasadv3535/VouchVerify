@@ -3,11 +3,11 @@
 <suite name="Failed suite [Default suite]" guice-stage="DEVELOPMENT">
   <test thread-count="5" name="Default test(failed)">
     <classes>
-      <class name="vouchVerifyTestScript.ApiVerificationPerformanceTest">
+      <class name="vouchVerifyTestScript.ToCheckTimeStampDelay">
         <methods>
-          <include name="apiVerification"/>
+          <include name="toCheckSingleDelay"/>
         </methods>
-      </class> <!-- vouchVerifyTestScript.ApiVerificationPerformanceTest -->
+      </class> <!-- vouchVerifyTestScript.ToCheckTimeStampDelay -->
     </classes>
   </test> <!-- Default test(failed) -->
 </suite> <!-- Failed suite [Default suite] -->

@@ -10,7 +10,7 @@ import org.testng.asserts.SoftAssert;
 import genricLibraries.BaseClass;
 import genricLibraries.UtilitiesPath;
 import io.restassured.response.Response;
-import payload.VerificationStatusCheck;
+import payload.VerificationStatusCheckPayload;
 
 public class UpiVerificationFlowForFree extends BaseClass {
 
@@ -93,7 +93,7 @@ public class UpiVerificationFlowForFree extends BaseClass {
 				}
 
 				// checking the status of verification by using api
-				Response statusResponse = VerificationStatusCheck.verificationStatus(property);
+				Response statusResponse = VerificationStatusCheckPayload.verificationStatus(property,property.readData("verifyID"));
 				System.out.println(statusResponse.getBody().asString());
 				break;
 			} catch (Exception timeOut) {
@@ -185,7 +185,7 @@ public class UpiVerificationFlowForFree extends BaseClass {
 						}
 					}
 					// checking the status of verification by using api
-					Response statusResponse = VerificationStatusCheck.verificationStatus(property);
+					Response statusResponse = VerificationStatusCheckPayload.verificationStatus(property,property.readData("verifyID"));
 					System.out.println(statusResponse.getBody().asString());
 					break;
 				} catch (Exception verifyHeader) {
