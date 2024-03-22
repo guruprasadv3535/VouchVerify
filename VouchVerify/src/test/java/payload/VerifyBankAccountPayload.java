@@ -28,13 +28,13 @@ public class VerifyBankAccountPayload {
 		}
 		String newValue = "" + verificationRef;
 		property.writeToProperties("verify_ref", newValue, UtilitiesPath.PROPERTIES_PATH);
-		String verfication_ref = "GuruClientVerifyRef-" + verificationRef;
+		String verfication_ref = "UpiVerify-" + verificationRef;
 		property.writeToProperties("verifyID", verfication_ref, UtilitiesPath.PROPERTIES_PATH);
 		outerBody.put("verification_ref", verfication_ref);
-		outerBody.put("type", "bank_account");
-		outerBody.put("upi_id", "");
-		outerBody.put("account_number",accNum);
-		outerBody.put("ifsc", ifscNum);
+		outerBody.put("type", "upi");
+		outerBody.put("upi_id", accNum);
+		outerBody.put("account_number","");
+		outerBody.put("ifsc", "");
 		outerBody.put("mobile", "8970486528");
 		outerBody.put("name", "Guruprasad");
 		outerBody.put("escrow_id", "guru1");

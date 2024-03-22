@@ -1,8 +1,11 @@
 package genricLibraries;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Random;
+
+import org.testng.annotations.Test;
 
 /*
  * This class contains reusable methods to perform java related actions
@@ -32,7 +35,8 @@ public class JavaUtilitiy {
 	public String getCurrentTime() {
 
 		Date date = new Date();
-		SimpleDateFormat sdf = new SimpleDateFormat("dd_MM_yy_hh_mm_sss");
+		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-YYYY");
 		return sdf.format(date);
 	}
+		
 }

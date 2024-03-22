@@ -15,14 +15,14 @@ import io.restassured.response.Response;
 public class SysConfPayload {
 
 	
-	public static Response cashFreeConfig(PropertiesUtility property) {
+	public static Response cashFreeConfig(PropertiesUtility property,boolean impsDown) {
 		
 		JSONObject outerBody=new JSONObject();
 		outerBody.put("timeout_status", "verifying_with_vouch_db");
 		outerBody.put("sandbox_timeout_value_for_timeout_status", 0);
 		outerBody.put("retry_wait_time", 300);
 		outerBody.put("unsupported_bank_ttl" , 1);
-		outerBody.put("imps_down" ,false );
+		outerBody.put("imps_down" ,impsDown);
 		outerBody.put("vv_upi_fee", property.readData("upiCost"));
 		outerBody.put("vv_bank_acc_fee", property.readData("accCost"));
 		outerBody.put("vv_gst_percentage", property.readData("gst"));

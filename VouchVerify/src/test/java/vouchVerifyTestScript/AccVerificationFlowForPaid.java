@@ -1,5 +1,6 @@
 package vouchVerifyTestScript;
 
+import java.util.Date;
 import java.util.List;
 
 import org.openqa.selenium.By;
@@ -8,21 +9,16 @@ import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
 
 import genricLibraries.BaseClass;
-import genricLibraries.BaseClassWithoutProfile;
-import genricLibraries.PropertiesUtility;
 import genricLibraries.UtilitiesPath;
 import io.restassured.response.Response;
-import payload.SysConfPayload;
 import payload.VerificationStatusCheckPayload;
-import pom.VerificationDetailsPage;
-import pom.Verification_PaymentHistoryPage;
 
 public class AccVerificationFlowForPaid extends BaseClass {
 
 	public void verifyFlowScript(String sheetName, int accRowNum, int ifscRowNum) throws InterruptedException {
 
 		// Setting the system config before making cashfree verify
-		Response response = SysConfPayload.cashFreeConfig(property);
+//		Response response = SysConfPayload.cashFreeConfig(property,boolean impsDown);
 
 		SoftAssert assert1 = new SoftAssert();
 
@@ -39,7 +35,7 @@ public class AccVerificationFlowForPaid extends BaseClass {
 
 		// for guest flow
 //		Thread.sleep(2000);
-//		assert1.assertEquals(home.getPopHeader(), "Do you want to login to save details");
+//		assert1.assertEquals(home.getPopHeader(), "Don't want to lose your data? Login to save");
 //		home.clickOnContinueAsGest();
 
 		Thread.sleep(5000);
@@ -88,7 +84,7 @@ public class AccVerificationFlowForPaid extends BaseClass {
 		}
 		payVerify.clickOnVerifyButton();
 
-		// making payment
+		// making payment in checkout page
 		Thread.sleep(2000);
 		assert1.assertEquals(driver.getTitle(), "Checkout");
 		payVerify.clickOnAddNewUpi();
@@ -106,23 +102,81 @@ public class AccVerificationFlowForPaid extends BaseClass {
 
 				assert1.assertEquals(home.getPageHeader(), "Verification History");
 				String vhVerifyDate = null;
+				String vhVerifyID = null;
+				String vhVerifyStatus = null;
+				String accUpi = null;
+				String ifsc = null;
+				String accPaymentId = null;
 				List<WebElement> verificationHistory = history.getTxnEntries();
-				for (int vhRows = 0; vhRows < verificationHistory.size(); vhRows++) {
-					if (vhRows == 0) {
-						List<WebElement> verificationHistoryVertical = verificationHistory.get(vhRows)
-								.findElements(By.tagName("td"));
-						for (int vhColumns = 0; vhColumns < verificationHistoryVertical.size(); vhColumns++) {
-							if (vhColumns == 1) {
-								vhVerifyDate = verificationHistoryVertical.get(vhColumns).getText();
-							}
-							if (vhColumns == 5) {
-								String vhVerifyID = verificationHistoryVertical.get(vhColumns).getText();
-								property.writeToProperties("verifyID", vhVerifyID, UtilitiesPath.PROPERTIES_PATH);
-							}
-							if (vhColumns == 6) {
-								String vhVerifyStatus = verificationHistoryVertical.get(vhColumns).getText();
-								assert1.assertEquals(vhVerifyStatus, "Pending at Bank");
-							}
+				for (int vhRows = 0; vhRows <= 0; vhRows++) {
+
+					List<WebElement> verificationHistoryVertical = verificationHistory.get(vhRows)
+							.findElements(By.tagName("td"));
+					for (int vhColumns = 0; vhColumns < verificationHistoryVertical.size(); vhColumns++) {
+						if (vhColumns == 1) {
+							vhVerifyDate = verificationHistoryVertical.get(vhColumns).getText();
+							String currentDate=java.getCurrentTime();
+							assert1.assertTrue(vhVerifyDate.contains(currentDate));
+						} else if (vhColumns == 2) {
+							String name = verificationHistoryVertical.get(vhColumns).getText();
+							assert1.assertEquals("-", name);
+						} else if (vhColumns == 3) {
+							accUpi = verificationHistoryVertical.get(vhColumns).getText();
+							assert1.assertEquals(excel.readDataFromExcel(sheetName, accRowNum, 1), accUpi);
+						} else if (vhColumns == 4) {
+							ifsc = verificationHistoryVertical.get(vhColumns).getText();
+							assert1.assertEquals(excel.readDataFromExcel(sheetName, ifscRowNum, 1), ifsc);
+						} else if (vhColumns == 5) {
+							vhVerifyID = verificationHistoryVertical.get(vhColumns).getText();
+							property.writeToProperties("verifyID", vhVerifyID, UtilitiesPath.PROPERTIES_PATH);
+							System.out.println("Pending VerID: " + vhVerifyID);
+						} else if (vhColumns == 6) {
+							vhVerifyStatus = verificationHistoryVertical.get(vhColumns).getText();
+							assert1.assertEquals(vhVerifyStatus, "Pending at Bank");
+						}
+					}
+
+					// Check Left accordian in verification history
+					verificationHistoryVertical.get(0).click();
+					Thread.sleep(2000);
+					List<WebElement> LeftaccordianDetials = history.getVHLeftAccordian();
+					for (int leftAcc = 0; leftAcc < LeftaccordianDetials.size(); leftAcc++) {
+						List<WebElement> leftAccDetails = LeftaccordianDetials.get(leftAcc)
+								.findElements(By.tagName("div"));
+
+						if (leftAcc == 0) {
+							String verifiedOn = leftAccDetails.get(2).getText();
+							assert1.assertEquals(vhVerifyDate, verifiedOn);
+						} else if (leftAcc == 1) {
+							String BankAccUpi = leftAccDetails.get(2).getText();
+							assert1.assertEquals(accUpi, BankAccUpi);
+						} else if (leftAcc == 2) {
+							String accIFSC = leftAccDetails.get(2).getText();
+							assert1.assertEquals(ifsc, accIFSC);
+						} else if (leftAcc == 3) {
+							String status = leftAccDetails.get(2).getText();
+							assert1.assertEquals(vhVerifyStatus, status);
+						}
+					}
+
+					// To check Right accordian in verification history
+					List<WebElement> RightaccordianDetials = history.getVHRightAccordian();
+					for (int rightAcc = 0; rightAcc < RightaccordianDetials.size(); rightAcc++) {
+						List<WebElement> rightAccDetails = RightaccordianDetials.get(rightAcc)
+								.findElements(By.tagName("div"));
+
+						if (rightAcc == 0) {
+							String Name = rightAccDetails.get(2).getText();
+							assert1.assertEquals("-", Name);
+						} else if (rightAcc == 1) {
+							String accVerifyId = rightAccDetails.get(2).getText();
+							assert1.assertEquals(vhVerifyID, accVerifyId);
+						} else if (rightAcc == 2) {
+							accPaymentId = rightAccDetails.get(2).getText();
+							assert1.assertNotEquals("-", accPaymentId);
+						} else if (rightAcc == 3) {
+							String response = rightAccDetails.get(2).getText();
+							assert1.assertEquals(response, "");
 						}
 					}
 				}
@@ -133,21 +187,28 @@ public class AccVerificationFlowForPaid extends BaseClass {
 				assert1.assertEquals(home.getPageHeader(), "Payment History");
 
 				List<WebElement> paymentHistory = history.getTxnEntries();
-				for (int phRows = 0; phRows < paymentHistory.size(); phRows++) {
-					if (phRows == 0) {
+				for (int phRows = 0; phRows <= 0; phRows++) {
+				
 						List<WebElement> paymentHistoryVertical = paymentHistory.get(phRows)
 								.findElements(By.tagName("td"));
 						for (int phColumns = 0; phColumns < paymentHistoryVertical.size(); phColumns++) {
 							if (phColumns == 0) {
 								String phPaymentDate = paymentHistoryVertical.get(phColumns).getText();
 								assert1.assertEquals(vhVerifyDate, phPaymentDate);
+							}else if (phColumns == 1) {
+								String amount = paymentHistoryVertical.get(phColumns).getText();
+								assert1.assertEquals(vhVerifyDate, amount);
+							}else if (phColumns == 2) {
+								String paymentId = paymentHistoryVertical.get(phColumns).getText();
+								assert1.assertEquals(accPaymentId, paymentId);
 							}
 						}
-					}
+					
 				}
 
 				// checking the status of verification by using api
-				Response statusResponse = VerificationStatusCheckPayload.verificationStatus(property,property.readData("verifyID"));
+				Response statusResponse = VerificationStatusCheckPayload.verificationStatus(property,
+						property.readData("verifyID"));
 				System.out.println(statusResponse.getBody().asString());
 				break;
 			} catch (Exception timeOut) {
@@ -166,19 +227,23 @@ public class AccVerificationFlowForPaid extends BaseClass {
 					// write verifyID and payment ID into properties file
 					property.writeToProperties("verifyID", verifyID, UtilitiesPath.PROPERTIES_PATH);
 					property.writeToProperties("paymentID", paymentID, UtilitiesPath.PROPERTIES_PATH);
-					System.out.println(verifyID);
+					System.out.println("Success: "+verifyID);
 
 					// validating the details in verification details shown
-					assert1.assertEquals(verify.getAccnoUpi(), excel.readDataFromExcel(sheetName, accRowNum, 1));
-					assert1.assertEquals(verify.getIfsc(), excel.readDataFromExcel(sheetName, ifscRowNum, 1));
-					assert1.assertNotEquals(verify.getPaymentID(), "-");
-					assert1.assertNotEquals(verify.getVerificationID(), "-");
+					assert1.assertEquals(accUpi, excel.readDataFromExcel(sheetName, accRowNum, 1));
+					assert1.assertEquals(ifsc, excel.readDataFromExcel(sheetName, ifscRowNum, 1));
+					assert1.assertNotEquals(paymentID, "-");
+					assert1.assertNotEquals(verifyName, "-");
+					String currentDate=java.getCurrentTime();
+					assert1.assertTrue(verifyDate.contains(currentDate));
 
 					// validating the verification response/status in verification details
 					if (sheetName.equals("ValidDetails")) {
 						assert1.assertTrue(verify.getValidVerificationStatus().isDisplayed());
+						assert1.assertNotEquals(verifyName, "-");
 					} else if (sheetName.equals("InvalidDetails")) {
 						assert1.assertEquals(verify.getVerificationResponse(), "Invalid");
+						assert1.assertEquals(verifyName, "-");
 					}
 
 					// checking the verified bank detail is updated in verification history
@@ -187,36 +252,80 @@ public class AccVerificationFlowForPaid extends BaseClass {
 					assert1.assertEquals(home.getPageHeader(), "Verification History");
 
 					List<WebElement> verificationHistory = history.getTxnEntries();
-					for (int vhRows = 0; vhRows < verificationHistory.size(); vhRows++) {
-						if (vhRows == 0) {
-							List<WebElement> verificationHistoryVertical = verificationHistory.get(vhRows)
-									.findElements(By.tagName("td"));
-							for (int vhColumns = 0; vhColumns < verificationHistoryVertical.size(); vhColumns++) {
-								if (vhColumns == 1) {
-									String vhVerifyDate = verificationHistoryVertical.get(vhColumns).getText();
-									assert1.assertEquals(vhVerifyDate, verifyDate);
-								} else if (vhColumns == 2) {
-									String vhVerifyName = verificationHistoryVertical.get(vhColumns).getText();
-									assert1.assertEquals(vhVerifyName, verifyName);
-								} else if (vhColumns == 3) {
-									String vhVerifyUpi = verificationHistoryVertical.get(vhColumns).getText();
-									assert1.assertEquals(vhVerifyUpi, accUpi);
-								} else if (vhColumns == 4) {
-									String vhVerifyIfsc = verificationHistoryVertical.get(vhColumns).getText();
-									assert1.assertEquals(vhVerifyIfsc, ifsc);
-								}
-								if (vhColumns == 5) {
-									String vhVerifyID = verificationHistoryVertical.get(vhColumns).getText();
-									assert1.assertEquals(vhVerifyID, verifyID);
-								} else if (vhColumns == 6) {
-									String vhVerifyStatus = verificationHistoryVertical.get(vhColumns).getText();
+					for (int vhRows = 0; vhRows <= 0; vhRows++) {
 
-									if (sheetName.equals("ValidDetails")) {
-										assert1.assertEquals(vhVerifyStatus, "Valid");
-									} else if (sheetName.equals("InvalidDetails")) {
-										assert1.assertEquals(vhVerifyStatus, "Invalid");
-									}
+						List<WebElement> verificationHistoryVertical = verificationHistory.get(vhRows)
+								.findElements(By.tagName("td"));
+						String vhVerifyStatus = null;
+						for (int vhColumns = 0; vhColumns < verificationHistoryVertical.size(); vhColumns++) {
+							if (vhColumns == 1) {
+								String vhVerifyDate = verificationHistoryVertical.get(vhColumns).getText();
+								assert1.assertEquals(vhVerifyDate, verifyDate);
+							} else if (vhColumns == 2) {
+								String vhVerifyName = verificationHistoryVertical.get(vhColumns).getText();
+								assert1.assertEquals(vhVerifyName, verifyName);
+							} else if (vhColumns == 3) {
+								String vhVerifyUpi = verificationHistoryVertical.get(vhColumns).getText();
+								assert1.assertEquals(vhVerifyUpi, accUpi);
+							} else if (vhColumns == 4) {
+								String vhVerifyIfsc = verificationHistoryVertical.get(vhColumns).getText();
+								assert1.assertEquals(vhVerifyIfsc, ifsc);
+							}
+							if (vhColumns == 5) {
+								String vhVerifyID = verificationHistoryVertical.get(vhColumns).getText();
+								assert1.assertEquals(vhVerifyID, verifyID);
+							} else if (vhColumns == 6) {
+								vhVerifyStatus = verificationHistoryVertical.get(vhColumns).getText();
+
+								if (sheetName.equals("ValidDetails")) {
+									assert1.assertEquals(vhVerifyStatus, "Valid");
+								} else if (sheetName.equals("InvalidDetails")) {
+									assert1.assertEquals(vhVerifyStatus, "Invalid");
 								}
+							}
+						}
+
+						// Check Left accordian in verification history
+						verificationHistoryVertical.get(0).click();
+						Thread.sleep(2000);
+						List<WebElement> LeftaccordianDetials = history.getVHLeftAccordian();
+						for (int leftAcc = 0; leftAcc < LeftaccordianDetials.size(); leftAcc++) {
+							List<WebElement> leftAccDetails = LeftaccordianDetials.get(leftAcc)
+									.findElements(By.tagName("div"));
+
+							if (leftAcc == 0) {
+								String verifiedOn = leftAccDetails.get(2).getText();
+								assert1.assertEquals(verifyDate, verifiedOn);
+							} else if (leftAcc == 1) {
+								String BankAccUpi = leftAccDetails.get(2).getText();
+								assert1.assertEquals(accUpi, BankAccUpi);
+							} else if (leftAcc == 2) {
+								String accIFSC = leftAccDetails.get(2).getText();
+								assert1.assertEquals(ifsc, accIFSC);
+							} else if (leftAcc == 3) {
+								String status = leftAccDetails.get(2).getText();
+								assert1.assertEquals(vhVerifyStatus, status);
+							}
+						}
+
+						// To check Right accordian in verification history
+						List<WebElement> RightaccordianDetials = history.getVHRightAccordian();
+						for (int rightAcc = 0; rightAcc < RightaccordianDetials.size(); rightAcc++) {
+							List<WebElement> rightAccDetails = RightaccordianDetials.get(rightAcc)
+									.findElements(By.tagName("div"));
+
+							if (rightAcc == 0) {
+								String Name = rightAccDetails.get(2).getText();
+								assert1.assertEquals(verifyName, Name);
+							} else if (rightAcc == 1) {
+								String accVerifyId = rightAccDetails.get(2).getText();
+								assert1.assertEquals(verifyID, accVerifyId);
+							} else if (rightAcc == 2) {
+								String accPaymentId = rightAccDetails.get(2).getText();
+								assert1.assertEquals(paymentID, accPaymentId);
+							} else if (rightAcc == 3) {
+								String response = rightAccDetails.get(2).getText();
+								assert1.assertNotEquals(response, "null");
 							}
 						}
 					}
@@ -227,7 +336,7 @@ public class AccVerificationFlowForPaid extends BaseClass {
 					assert1.assertEquals(home.getPageHeader(), "Payment History");
 
 					List<WebElement> paymentHistory = history.getTxnEntries();
-					for (int phRows = 0; phRows < paymentHistory.size(); phRows++) {
+					for (int phRows = 0; phRows <= 0; phRows++) {
 						if (phRows == 0) {
 							List<WebElement> paymentHistoryVertical = paymentHistory.get(phRows)
 									.findElements(By.tagName("td"));
@@ -246,7 +355,8 @@ public class AccVerificationFlowForPaid extends BaseClass {
 						}
 					}
 					// checking the status of verification by using api
-					Response statusResponse = VerificationStatusCheckPayload.verificationStatus(property,property.readData("verifyID"));
+					Response statusResponse = VerificationStatusCheckPayload.verificationStatus(property,
+							property.readData("verifyID"));
 					System.out.println(statusResponse.getBody().asString());
 					break;
 				} catch (Exception verifyHeader) {
@@ -322,4 +432,97 @@ public class AccVerificationFlowForPaid extends BaseClass {
 
 		verifyFlowScript("FailedDetails", 7, 8);
 	}
+
+	/*
+	 * To verify a account by setting a config
+	 */
+
+//	Verifying at CashFree
+//	@Test(priority = 0)
+//	public void cashFreeVerification() throws InterruptedException {
+//
+//	    DeleteBenePayload.deleteBenePayload("", excel.readDataFromExcel("ValidDetails", 1, 1), excel.readDataFromExcel("ValidDetails", 2, 1));
+//		// calling the verifyFlowScript(verify flow) function to complete the
+//		// verification
+//		freeVerifyFlowScript("ValidDetails", 1, 2,true);
+//	}
+//	
+//	@Test(priority = 1)
+//	public void cashFreeVerificationAtDB() throws InterruptedException {
+//
+//		// calling the verifyFlowScript(verify flow) function to complete the
+//		// verification
+//		freeVerifyFlowScript("ValidDetails", 1, 2,true);
+//	}
+//	
+//	@Test(priority = 2)
+//	public void cashFreeInvalidVerification() throws InterruptedException {
+//       DeleteBenePayload.deleteBenePayload("", excel.readDataFromExcel("InvalidDetails",1, 1), excel.readDataFromExcel("ValidDetails",2, 1));
+//		freeVerifyFlowScript("InvalidDetails", 1, 2,true);
+//	}
+//	
+//	@Test(priority = 3)
+//	public void cashFreeFailedVerification() throws InterruptedException {
+//
+//		freeVerifyFlowScript("FailedDetails", 1, 2,true);
+//	}
+//	
+////	Verifying at ICICI name Enq
+//	@Test(priority = 4)
+//	public void iciciEnqVerification() throws InterruptedException {
+//      DeleteBenePayload.deleteBenePayload("", excel.readDataFromExcel("ValidDetails", 4, 1), excel.readDataFromExcel("ValidDetails", 5, 1));
+//		// calling the verifyFlowScript(verify flow) function to complete the
+//		// verification
+//		freeVerifyFlowScript("ValidDetails", 4, 5,false);
+//	}
+//	
+//	@Test(priority = 5)
+//	public void iciciEnqVerificationAtDB() throws InterruptedException {
+//
+//		// calling the verifyFlowScript(verify flow) function to complete the
+//		// verification
+//		freeVerifyFlowScript("ValidDetails", 4, 5,false);
+//	}
+//	
+//	@Test(priority = 6)
+//	public void iciciEnqInvalidVerification() throws InterruptedException {
+//       DeleteBenePayload.deleteBenePayload("", excel.readDataFromExcel("InvalidDetails",4, 1), excel.readDataFromExcel("ValidDetails",5, 1));
+//		freeVerifyFlowScript("InvalidDetails", 4, 5,false);
+//	}
+//	
+//	@Test(priority = 7)
+//	public void iciciEnqFailedVerification() throws InterruptedException {
+//
+//		freeVerifyFlowScript("FailedDetails", 4, 5,false);
+//	}
+//	
+////	verifying at pennydrop
+//	@Test(priority = 8)
+//	public void pennyDropVerification() throws InterruptedException {
+//      DeleteBenePayload.deleteBenePayload("", excel.readDataFromExcel("ValidDetails", 7, 1), excel.readDataFromExcel("ValidDetails", 8, 1));
+//		// calling the verifyFlowScript(verify flow) function to complete the
+//		// verification
+//		freeVerifyFlowScript("ValidDetails", 7, 8,false);
+//	}
+//	
+//	@Test(priority = 9)
+//	public void pennyDropVerificationAtDB() throws InterruptedException {
+//
+//		// calling the verifyFlowScript(verify flow) function to complete the
+//		// verification
+//		freeVerifyFlowScript("ValidDetails", 7, 8,false);
+//	}
+//	
+//	@Test(priority = 10)
+//	public void pennyDropInvalidVerification() throws InterruptedException {
+//      DeleteBenePayload.deleteBenePayload("", excel.readDataFromExcel("InvalidDetails",7, 1), excel.readDataFromExcel("ValidDetails",8, 1));
+//		freeVerifyFlowScript("InvalidDetails", 7, 8,false);
+//	}
+//	
+//	@Test(priority = 11)
+//	public void pennyDropFailedVerification() throws InterruptedException {
+//
+//		freeVerifyFlowScript("FailedDetails", 7, 8,false);
+//	}
+
 }

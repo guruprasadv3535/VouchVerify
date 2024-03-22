@@ -6,6 +6,7 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 
+import pom.BulkVerificationPage;
 import pom.HomePage;
 import pom.Pay_VerifyPage;
 import pom.SignInPage;
@@ -18,6 +19,7 @@ public class BaseClass {
 	protected ExcelUtility excel;
 	protected WebDriverUtility web;
 	protected WebDriver driver;
+	protected JavaUtilitiy java;
 
 //	pom classes need to declared
 	protected HomePage home;
@@ -25,6 +27,7 @@ public class BaseClass {
 	protected SignInPage signIn;
 	protected VerificationDetailsPage verify;
 	protected Verification_PaymentHistoryPage history;
+	protected BulkVerificationPage bulk;
 	
 
 //	@BeforeSuite   because there is no database to connect in this project
@@ -35,6 +38,7 @@ public class BaseClass {
 		property = new PropertiesUtility();
 		excel = new ExcelUtility();
 		web = new WebDriverUtility();
+		java=new JavaUtilitiy();
 
 		property.propertiesInit(UtilitiesPath.PROPERTIES_PATH);
 		excel.excelInit(UtilitiesPath.EXCEL_PATH);
@@ -65,7 +69,7 @@ public class BaseClass {
 		signIn = new SignInPage(driver);
 		verify = new VerificationDetailsPage(driver);
 		history = new Verification_PaymentHistoryPage(driver);
-
+        bulk = new BulkVerificationPage(driver);
 	}
 
 	@AfterMethod

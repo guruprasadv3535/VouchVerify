@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="Failed suite [FreeVerification]" guice-stage="DEVELOPMENT">
+  <test thread-count="5" name="SystemTesting(failed)">
+    <classes>
+      <class name="vouchVerifyTestScript.AccVerificationFlowForFree">
+        <methods>
+          <include name="cashFreeFailedVerification"/>
+          <include name="pennyDropVerification"/>
+          <include name="iciciEnqVerification"/>
+          <include name="cashFreeVerification"/>
+          <include name="classConfig"/>
+          <include name="pennyDropFailedVerification"/>
+          <include name="pennyDropInvalidVerification"/>
+          <include name="classTearDown"/>
+          <include name="methodConfig"/>
+          <include name="cashFreeInvalidVerification"/>
+          <include name="methodTearDown"/>
+          <include name="iciciEnqInvalidVerification"/>
+          <include name="iciciEnqFailedVerification"/>
+        </methods>
+      </class> <!-- vouchVerifyTestScript.AccVerificationFlowForFree -->
+    </classes>
+  </test> <!-- SystemTesting(failed) -->
+</suite> <!-- Failed suite [FreeVerification] -->

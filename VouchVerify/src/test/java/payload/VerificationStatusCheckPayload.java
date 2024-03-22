@@ -35,7 +35,7 @@ public class VerificationStatusCheckPayload {
 		String signature = null;
 		try {
 			signature = SignatureGenerator.generateRSASignature(stringPayload,
-					PrivateKeyAccess.getPrivateKey("./PrivateKey/LivePrivateKey.key"));
+					PrivateKeyAccess.getPrivateKey("./PrivateKey/clientApiPrivateKey.key"));
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -48,7 +48,7 @@ public class VerificationStatusCheckPayload {
 		// live api key
 		// String apiKey = ApiKeyAccess.getApiKey("./apiKey/statusApiKey.key");
 		// sandbox api key
-		String apiKey = ApiKeyAccess.getApiKey("./apiKey/statusApiKey.key");
+		String apiKey = ApiKeyAccess.getApiKey("./apiKey/clientApiKey.key");
 
 //		It is for invoking the api 
 		Response response = RestAssured.given().contentType(ContentType.JSON).accept(ContentType.JSON)

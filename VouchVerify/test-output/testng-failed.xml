@@ -3,11 +3,15 @@
 <suite name="Failed suite [Default suite]" guice-stage="DEVELOPMENT">
   <test thread-count="5" name="Default test(failed)">
     <classes>
-      <class name="vouchVerifyTestScript.ToCheckTimeStampDelay">
+      <class name="vouchVerifyTestScript.FreeBulkVerificationTest">
         <methods>
-          <include name="toCheckSingleDelay"/>
+          <include name="classConfig"/>
+          <include name="bulkVerificationFlow"/>
+          <include name="methodConfig"/>
+          <include name="classTearDown"/>
+          <include name="methodTearDown"/>
         </methods>
-      </class> <!-- vouchVerifyTestScript.ToCheckTimeStampDelay -->
+      </class> <!-- vouchVerifyTestScript.FreeBulkVerificationTest -->
     </classes>
   </test> <!-- Default test(failed) -->
 </suite> <!-- Failed suite [Default suite] -->

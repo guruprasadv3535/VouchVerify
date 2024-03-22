@@ -44,14 +44,14 @@ public class VerificationDetailsPage {
 	private WebElement nameInBank;
 	
 	//verification status
-	@FindBy(xpath = "//div[@class='MuiBox-root css-1tou45f']/img")
+	@FindBy(xpath = "//*[local-name()='svg']/*[local-name()='g']")
 	private WebElement validStatus;
 	
 	@FindBy(xpath = "//div[@class='MuiBox-root css-1pvkr1y']/p[1]")
 	private WebElement verificationResponse;
 	
 	//timeout screen
-	@FindBy(xpath = "//p[contains(text(),'Oops, this is taking longer than we expected.')]")
+	@FindBy(xpath = "//p[contains(text(),'Uh-oh, looks like its taking longer than expected.')]")
 	private WebElement timeoutScreen;
 	
 	@FindBy(xpath = "//button[text()='Go to Verification history']")

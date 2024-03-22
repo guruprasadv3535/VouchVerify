@@ -60,19 +60,19 @@ public class HomePageInvalidCriteriaValidation extends BaseClass {
 		home.sendAccNo_Upi().sendKeys(Keys.chord(Keys.CONTROL,"a"),Keys.DELETE);
 		
 		//check the side navigation components is displayed or not
-		assert1.assertTrue(home.getHomePage().isDisplayed());
-		assert1.assertTrue(home.getBulkVerify().isDisplayed());
-		assert1.assertTrue(home.getVerificationHistory().isDisplayed());
-		assert1.assertTrue(home.getPaymentHistory().isDisplayed());
+		assert1.assertTrue(home.getHomePage().isDisplayed(),"Home page menu not displayed");
+		assert1.assertTrue(home.getBulkVerify().isDisplayed(),"Bulk verify menu not displayed");
+		assert1.assertTrue(home.getVerificationHistory().isDisplayed(),"Verification history menu not displayed");
+		assert1.assertTrue(home.getPaymentHistory().isDisplayed(),"Payment history menu not displayed");
 		
 		//check the banner profile is displayed or not
-		assert1.assertTrue(home.bannerProfile().isDisplayed());
+		assert1.assertTrue(home.bannerProfile().isDisplayed(),"Profile banner not displayed");
 		
 		//checking the free banner for free version
-		assert1.assertTrue(home.freeBanner().isDisplayed());
+		assert1.assertTrue(home.freeBanner().isDisplayed(), "Free banner not displayed");
 		
 		//checking the terms and services link
-		assert1.assertEquals(home.getTermsConditionLink().getText(), "Terms of service");
+		assert1.assertEquals(home.getTermsConditionLink().getText(), "Terms of service.");
 		home.getTermsConditionLink().click();
 		Thread.sleep(2000);
 		assert1.assertEquals(home.getPageHeader(), "Terms of Service");

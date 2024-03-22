@@ -103,10 +103,15 @@
 			<version>0.9.1</version>
 		</dependency>
 		<!-- Oracle JDBC Driver -->
-    <dependency>
-        <groupId>com.oracle.database.jdbc</groupId>
-        <artifactId>ojdbc8</artifactId>
-        <version>19.8.0.0</version>
-    </dependency>
+		<dependency>
+			<groupId>com.oracle.database.jdbc</groupId>
+			<artifactId>ojdbc8</artifactId>
+			<version>19.8.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-dbcp2</artifactId>
+			<version>2.9.0</version> <!-- or the latest version -->
+		</dependency>
 	</dependencies>
 </project>

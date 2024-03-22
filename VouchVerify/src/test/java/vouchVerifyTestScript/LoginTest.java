@@ -8,7 +8,7 @@ import genricLibraries.BaseClassWithoutProfile;
 
 public class LoginTest extends BaseClassWithoutProfile {
 
-//	@Test
+	@Test
 	public void newUserLogin() throws InterruptedException {
 		SoftAssert assert1 = new SoftAssert();
 
@@ -88,6 +88,7 @@ public class LoginTest extends BaseClassWithoutProfile {
 		}
 		Thread.sleep(1000);
 		signIn.clickOnVerifyOtpButton();
+		Thread.sleep(2000);
 
 		// validate it showing a valid profile which is linked with mobile number
 		home.clickOnProfile();

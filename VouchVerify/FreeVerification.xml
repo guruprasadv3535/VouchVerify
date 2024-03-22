@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="FreeVerification">
+  <test thread-count="5" name="SystemTesting">
+    <classes>
+      <class name="vouchVerifyTestScript.UpiVerificationFlowForFree"/>
+      <class name="vouchVerifyTestScript.AccVerificationFlowForFree"/>
+    </classes>
+  </test> <!-- SystemTesting -->
+</suite> <!-- FreeVerification -->

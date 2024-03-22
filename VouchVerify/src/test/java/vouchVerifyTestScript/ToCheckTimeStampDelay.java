@@ -1,10 +1,12 @@
 package vouchVerifyTestScript;
 
+import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 
 import org.testng.annotations.Test;
 
@@ -74,12 +76,12 @@ public class ToCheckTimeStampDelay {
 	public void toCheckSingleDelay() {
 		
 		// Define the date time format
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy, h:mm:ss a");
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yy h:mm:ss.SSSSSSSSS a");
 				
-		String apiDate="24/11/2023, 10:28:24 pm";
-		String webhookDate="24-11-23 5:30:04.456913000 pm";
-		LocalDateTime timestamp1 = LocalDateTime.parse(apiDate, formatter);
-		LocalDateTime timestamp2 = LocalDateTime.parse(toConvertUSTtoIST(webhookDate), formatter);
+		String apiDate="20-12-23 2:30:21.999730000 PM";
+		String webhookDate="20-12-23 2:30:39.058359000 PM";
+		LocalDateTime timestamp1 = LocalDateTime.parse(apiDate.toLowerCase(), formatter);
+		LocalDateTime timestamp2 = LocalDateTime.parse(webhookDate.toLowerCase(), formatter);
 		
 		// Calculate the time delay
 		Duration duration = Duration.between(timestamp1, timestamp2);
@@ -99,4 +101,5 @@ public class ToCheckTimeStampDelay {
 		// return String.valueOf(seconds);
 		return String.format("%d seconds", seconds);
 	}
+
 }

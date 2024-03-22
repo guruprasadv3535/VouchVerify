@@ -57,6 +57,9 @@ public class Verification_PaymentHistoryPage {
 
 	@FindBy(xpath = "//tbody[@class='MuiTableBody-root css-n2t27x']/tr")
 	private List<WebElement> txnList;
+	
+	@FindBy(xpath = "//thead[contains(@class,'css-1y8o0b2')]/tr/th")
+	private List<WebElement> tableHeader;
 
 	@FindBy(xpath = "//p[@class='MuiTypography-root MuiTypography-body2 css-1ut9wea']")
 	private WebElement fotterEntriesNumber;
@@ -66,6 +69,13 @@ public class Verification_PaymentHistoryPage {
 
 	@FindBy(xpath = "(//button[contains(@class,'css-1xydw8j')])[2]")
 	private WebElement nextPageButton;
+	
+	//Verification history accordian
+	@FindBy(xpath = "//div[contains(@class,'css-1vgo2f')]/div")
+	private List<WebElement> vhLeftAccordian;
+	
+	@FindBy(xpath = "//div[contains(@class,'css-q74ucs')]/div")
+	private List<WebElement> vhRightAccordian;
 
 //	Initialization 
 	public Verification_PaymentHistoryPage(WebDriver driver) {
@@ -168,6 +178,15 @@ public class Verification_PaymentHistoryPage {
 	// to navigate to next page
 	public void clickOnNextButton() {
 		nextPageButton.click();
+	}
+	
+	//To get the details in verification history accordian
+	public List<WebElement> getVHLeftAccordian(){
+		return vhLeftAccordian;
+	}
+	
+	public List<WebElement> getVHRightAccordian(){
+		return vhRightAccordian;
 	}
 
 }
