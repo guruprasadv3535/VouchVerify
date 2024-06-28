@@ -2,16 +2,16 @@
 <testng-results ignored="0" total="1" passed="1" failed="0" skipped="0">
   <reporter-output>
   </reporter-output>
-  <suite started-at="2024-03-19T11:31:25 IST" name="Default suite" finished-at="2024-03-19T11:35:29 IST" duration-ms="243492">
+  <suite started-at="2024-06-12T18:27:05 IST" name="Default suite" finished-at="2024-06-12T18:35:48 IST" duration-ms="522685">
     <groups>
     </groups>
-    <test started-at="2024-03-19T11:31:25 IST" name="Default test" finished-at="2024-03-19T11:35:29 IST" duration-ms="243492">
-      <class name="DataBaseChecking.PendingPayoutFailure">
-        <test-method signature="pendingPayoutFailureDetailsFetchInDB()[pri:0, instance:DataBaseChecking.PendingPayoutFailure@2ddc9a9f]" started-at="2024-03-19T11:31:25 IST" name="pendingPayoutFailureDetailsFetchInDB" finished-at="2024-03-19T11:35:29 IST" duration-ms="243458" status="PASS">
+    <test started-at="2024-06-12T18:27:05 IST" name="Default test" finished-at="2024-06-12T18:35:48 IST" duration-ms="522685">
+      <class name="DataBaseChecking.LadgerLabelFetch">
+        <test-method signature="pendingPayoutFailureDetailsFetchInDB()[pri:0, instance:DataBaseChecking.LadgerLabelFetch@26d9b808]" started-at="2024-06-12T18:27:05 IST" name="pendingPayoutFailureDetailsFetchInDB" finished-at="2024-06-12T18:35:48 IST" duration-ms="522654" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- pendingPayoutFailureDetailsFetchInDB -->
-      </class> <!-- DataBaseChecking.PendingPayoutFailure -->
+      </class> <!-- DataBaseChecking.LadgerLabelFetch -->
     </test> <!-- Default test -->
   </suite> <!-- Default suite -->
 </testng-results>
